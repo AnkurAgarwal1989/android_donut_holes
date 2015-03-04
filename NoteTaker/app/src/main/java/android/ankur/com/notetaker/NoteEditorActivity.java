@@ -38,7 +38,11 @@ public class NoteEditorActivity extends Activity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("key", note.getKey());
         intent.putExtra("text", noteText);
-        setResult(RESULT_OK, intent);
+        Log.i("NOTES", String.valueOf(noteText.length()));
+        if (noteText.length() > 1)
+            setResult(RESULT_OK, intent);
+        else
+            setResult(RESULT_CANCELED, intent);
         finish();
     }
 
