@@ -1,6 +1,8 @@
 package android.ankur.com.datastorage_preferences;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,13 +19,30 @@ public class MainActivity extends ActionBarActivity {
     public static final String DETAIL = "detail";
 
     private SharedPreferences prefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        prefs = getPreferences(MODE_PRIVATE);
-        getPrefs(findViewById(android.R.id.content));
+
+
+        // use PreferenceManager for PreferenceActivity
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Add a listener so that we can update main activity when preferences are changed.
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                MainActivity.this.getPrefs(null);  //entire view
+            }
+        };
+
+        //register listener
+        prefs.registerOnSharedPreferenceChangeListener(listener);
+
+        // use getPreferences for using preferences separately
+        //prefs = getPreferences(MODE_PRIVATE);
     }
 
 
@@ -43,6 +62,9 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            // start preference activity
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
