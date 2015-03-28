@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends ListActivity {
 
+    private static final String LOGTAG = "TOURS";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +27,8 @@ public class MainActivity extends ListActivity {
 
         final ArrayAdapter adapter = new ArrayAdapter(this,R.layout.list_item_layout, R.id.listItem_Label, arrayList);
         setListAdapter(adapter);
+
+        //final ToursListAdapter toursListAdapter = new ToursListAdapter()
     }
 
     @Override

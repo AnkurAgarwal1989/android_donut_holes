@@ -11,17 +11,20 @@ import android.widget.TextView;
 /**
  * Created by Ankur on 3/27/2015.
  */
+//Class to provide data to list...Class takes tourName and tourImageName and adds to list
 public class ToursListAdapter extends ArrayAdapter<String> {
 
     private final Context context;
-    private final String fileName;
+    private final String tourName;
+    private final String tourImageName;
     private final int resource;
 
-    public ToursListAdapter(Context context, int resource, String fileName) {
+    public ToursListAdapter(Context context, int resource, String tourName, String tourImageName) {
         super(context, resource);
         this.context = context;
-        this.fileName = fileName;
         this.resource = resource;
+        this.tourName = tourName;
+        this.tourImageName = tourImageName;
     }
 
     @Override
