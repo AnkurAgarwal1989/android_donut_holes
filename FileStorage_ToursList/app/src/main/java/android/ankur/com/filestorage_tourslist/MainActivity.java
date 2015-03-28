@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -26,10 +30,40 @@ public class MainActivity extends ListActivity {
         arrayList.add("trip 1");
         arrayList.add("trip 2");
 
-        final ArrayAdapter adapter = new ArrayAdapter(this,R.layout.list_item_layout, R.id.listItem_Label, arrayList);
+        ToursFileStorage fileStorageHelper = null;
+        try {
+            fileStorageHelper = new ToursFileStorage(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray tours = null;
+        if (fileStorageHelper != null) {
+            try {
+                tours = fileStorageHelper.readFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        final ArrayList<String> toursList = new ArrayList<String>();
+        for (int i = 0; i < tours.length(); i++) {
+            try {
+                String tourName = tours.getJSONObject(i).getString("tour");
+                toursList.add(tourName);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        final ArrayAdapter adapter = new ArrayAdapter(this, R.layout.list_item_layout, R.id.listItem_Label, toursList);
         setListAdapter(adapter);
 
-        ToursFileStorage fileStorageHelper = new ToursFileStorage(this);
         //final ToursListAdapter toursListAdapter = new ToursListAdapter()
     }
 
