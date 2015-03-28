@@ -2,7 +2,6 @@ package android.ankur.com.filestorage_tourslist.data;
 
 import android.content.Context;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -12,7 +11,6 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -37,7 +35,7 @@ public class ToursFileStorage {
             path = extDir.getAbsolutePath();
             Toast.makeText(this.context, path, Toast.LENGTH_LONG).show();
             file = new File(extDir, FILENAME);
-            createFile();
+            createJSONFile();
         }
 
 
@@ -59,7 +57,7 @@ public class ToursFileStorage {
 
     }
 
-    public void createFile() throws JSONException, IOException {
+    public void createJSONFile() throws JSONException, IOException {
 
         if (!checkExternalStorage())
             return;
@@ -74,7 +72,7 @@ public class ToursFileStorage {
         fileOutputStream.close();
     }
 
-    public JSONArray readFile() throws IOException, JSONException {
+    public JSONArray readJSONFile() throws IOException, JSONException {
         FileInputStream fileInputStream;
         fileInputStream = new FileInputStream(file);
         BufferedInputStream bis = new BufferedInputStream(fileInputStream);
