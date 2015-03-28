@@ -1,5 +1,6 @@
 package android.ankur.com.filestorage_tourslist;
 
+import android.ankur.com.filestorage_tourslist.data.ToursFileStorage;
 import android.app.ListActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class MainActivity extends ListActivity {
         final ArrayAdapter adapter = new ArrayAdapter(this,R.layout.list_item_layout, R.id.listItem_Label, arrayList);
         setListAdapter(adapter);
 
+        ToursFileStorage fileStorageHelper = new ToursFileStorage(this);
         //final ToursListAdapter toursListAdapter = new ToursListAdapter()
     }
 
