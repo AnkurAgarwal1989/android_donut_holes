@@ -58,11 +58,27 @@ public class ToursDataSource {
     }
 
     public List<Tour> readAll(){
-        List<Tour> tours = new ArrayList<Tour>();
 
         Cursor cursor = db.query(ToursDBOpenHelper.TABLE_TOURS, allColumns, null, null, null, null, null);
 
         Log.i(LOGTAG, "Read " + cursor.getCount() + " rows from table");
+
+        List<Tour> tours = cursorToList(cursor);
+        return tours;
+    }
+
+    public List<Tour> readFiltered(String selection, String orderBy){
+
+        Cursor cursor = db.query(ToursDBOpenHelper.TABLE_TOURS, allColumns, selection, null, null, null, orderBy);
+
+        Log.i(LOGTAG, "Read " + cursor.getCount() + " rows from table");
+
+        List<Tour> tours = cursorToList(cursor);
+        return tours;
+    }
+
+    private List<Tour> cursorToList(Cursor cursor) {
+        List<Tour> tours = new ArrayList<Tour>();
         if(cursor.getCount() > 0){
             while (cursor.moveToNext()){
                 Tour tour = new Tour();

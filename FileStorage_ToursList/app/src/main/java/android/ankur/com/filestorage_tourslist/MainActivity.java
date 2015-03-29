@@ -2,19 +2,13 @@ package android.ankur.com.filestorage_tourslist;
 
 import android.ankur.com.filestorage_tourslist.data.Tour;
 import android.ankur.com.filestorage_tourslist.data.ToursJSONFileStorage;
-import android.ankur.com.filestorage_tourslist.db.ToursDBOpenHelper;
 import android.ankur.com.filestorage_tourslist.db.ToursDataSource;
-import android.app.ActionBar;
 import android.app.ListActivity;
-import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +23,7 @@ public class MainActivity extends ListActivity {
     private static final String LOGTAG = "TOURS";
 
     ToursDataSource dataSource;
+    private List<Tour> tours;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,23 +36,25 @@ public class MainActivity extends ListActivity {
         dataSource = new ToursDataSource(this);
         dataSource.openDB();
 
-        List<Tour> tours = dataSource.readAll();
+        tours = dataSource.readAll();
         if (tours.size() == 0){
             importXMLtoSQLite();
             tours = dataSource.readAll();
         }
 
+        refreshDisplay();
+    }
+
+    private void refreshDisplay() {
         final ToursListAdapter toursListAdapter = new ToursListAdapter(this, R.layout.list_item_layout, tours);
         setListAdapter(toursListAdapter);
     }
 
     private void useXMLFile() {
         ToursPullParser toursPullParser = new ToursPullParser();
-        List<Tour> tours;
         tours = toursPullParser.parseXML(this);
 
-        final ToursListAdapter toursListAdapter = new ToursListAdapter(this, R.layout.list_item_layout, tours);
-        setListAdapter(toursListAdapter);
+        refreshDisplay();
         //ArrayAdapter<Tour> tourArray = new ArrayAdapter<Tour>(this, R.layout.list_item_layout,R.id.listItem_Label, tours);
         //setListAdapter(tourArray);
     }
@@ -92,7 +89,6 @@ public class MainActivity extends ListActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
 
         final ArrayAdapter adapter = new ArrayAdapter(this, R.layout.list_item_layout, R.id.listItem_Label, toursList);
@@ -111,13 +107,27 @@ public class MainActivity extends ListActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch(item.getItemId()){
+            case R.id.action_settings:
+                tours = dataSource.readAll();
+                break;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.action_all:
+                tours = dataSource.readAll();
+                break;
+
+            case R.id.action_basic:
+                tours = dataSource.readFiltered("price <= 300", "price ASC");
+                break;
+
+            case R.id.action_premium:
+                tours = dataSource.readFiltered("price > 300", "price DESC");
+                break;
+
+            default:
+                break;
         }
-
+        refreshDisplay();
         return super.onOptionsItemSelected(item);
     }
 

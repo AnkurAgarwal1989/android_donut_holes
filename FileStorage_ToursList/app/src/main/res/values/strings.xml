@@ -4,5 +4,8 @@
     <string name="app_name">FileStorage_ToursList</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_basic">basic</string>
+    <string name="action_all">All</string>
+    <string name="action_premium">Premium</string>
 
 </resources>
