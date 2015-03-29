@@ -37,8 +37,10 @@ public class MainActivity extends ListActivity {
         List<Tour> tours;
         tours = toursPullParser.parseXML(this);
 
-        ArrayAdapter<Tour> tourArray = new ArrayAdapter<Tour>(this, R.layout.list_item_layout,R.id.listItem_Label, tours);
-        setListAdapter(tourArray);
+        final ToursListAdapter toursListAdapter = new ToursListAdapter(this, R.layout.list_item_layout, tours);
+        setListAdapter(toursListAdapter);
+        //ArrayAdapter<Tour> tourArray = new ArrayAdapter<Tour>(this, R.layout.list_item_layout,R.id.listItem_Label, tours);
+        //setListAdapter(tourArray);
     }
 
     private void useJSONFile() {
