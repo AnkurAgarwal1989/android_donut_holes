@@ -1,6 +1,8 @@
 package android.ankur.com.filestorage_tourslist;
 
-import android.ankur.com.filestorage_tourslist.data.ToursFileStorage;
+import android.ankur.com.filestorage_tourslist.data.Tour;
+import android.ankur.com.filestorage_tourslist.data.ToursJSONFileStorage;
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +14,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends ListActivity {
@@ -22,14 +25,27 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //ListView listView = (ListView) findViewById(R.id.listView_Tours);
-        final ArrayList<String> arrayList = new ArrayList<String>();
-        arrayList.add("trip 1");
-        arrayList.add("trip 2");
+        //useJSONFile();
+        useXMLFile();
 
-        ToursFileStorage fileStorageHelper = null;
+
+        //final ToursListAdapter toursListAdapter = new ToursListAdapter()
+    }
+
+    private void useXMLFile() {
+        ToursPullParser toursPullParser = new ToursPullParser();
+        List<Tour> tours;
+        tours = toursPullParser.parseXML(this);
+
+        ArrayAdapter<Tour> tourArray = new ArrayAdapter<Tour>(this, R.layout.list_item_layout,R.id.listItem_Label, tours);
+        setListAdapter(tourArray);
+    }
+
+    private void useJSONFile() {
+        //For JSON file stored in external memory
+        ToursJSONFileStorage fileStorageHelper = null;
         try {
-            fileStorageHelper = new ToursFileStorage(this);
+            fileStorageHelper = new ToursJSONFileStorage(this);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -60,8 +76,6 @@ public class MainActivity extends ListActivity {
 
         final ArrayAdapter adapter = new ArrayAdapter(this, R.layout.list_item_layout, R.id.listItem_Label, toursList);
         setListAdapter(adapter);
-
-        //final ToursListAdapter toursListAdapter = new ToursListAdapter()
     }
 
     @Override

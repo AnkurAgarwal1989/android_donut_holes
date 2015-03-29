@@ -13,7 +13,7 @@ import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.util.Log;
 
-import com.exploreca.tourfinder.model.Tour;
+import android.ankur.com.filestorage_tourslist.data.Tour;
 
 public class ToursPullParser {
 
@@ -30,12 +30,14 @@ public class ToursPullParser {
 	List<Tour> tours = new ArrayList<Tour>();
 
 	public List<Tour> parseXML(Context context) {
+        //context is required as we need to access the right res folders
 
 		try {
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XmlPullParser xpp = factory.newPullParser();
-			
+
+            //Open required .xml file from res/raw
 			InputStream stream = context.getResources().openRawResource(R.raw.tours);
 			xpp.setInput(stream, null);
 
@@ -87,6 +89,7 @@ public class ToursPullParser {
 
 	private void handleStartTag(String name) {
 		if (name.equals("tour")) {
+            //create new tour object when you hit <tour>
 			currentTour = new Tour();
 			tours.add(currentTour);
 		}
