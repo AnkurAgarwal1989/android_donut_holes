@@ -5,12 +5,14 @@ import android.ankur.com.filestorage_tourslist.data.ToursJSONFileStorage;
 import android.ankur.com.filestorage_tourslist.db.ToursDBOpenHelper;
 import android.app.ActionBar;
 import android.app.ListActivity;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,10 +25,6 @@ import java.util.List;
 public class MainActivity extends ListActivity {
 
     private static final String LOGTAG = "TOURS";
-
-    SQLiteOpenHelper dbhelper;
-    SQLiteDatabase db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,10 +32,6 @@ public class MainActivity extends ListActivity {
 
         //useJSONFile();
         useXMLFile();
-
-        dbhelper = new ToursDBOpenHelper(this);
-        db = dbhelper.getWritableDatabase();
-
 
         //final ToursListAdapter toursListAdapter = new ToursListAdapter()
     }
