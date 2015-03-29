@@ -3,6 +3,7 @@ package android.ankur.com.filestorage_tourslist;
 import android.ankur.com.filestorage_tourslist.data.Tour;
 import android.ankur.com.filestorage_tourslist.data.ToursJSONFileStorage;
 import android.ankur.com.filestorage_tourslist.db.ToursDBOpenHelper;
+import android.ankur.com.filestorage_tourslist.db.ToursDataSource;
 import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.pm.PackageManager;
@@ -25,6 +26,9 @@ import java.util.List;
 public class MainActivity extends ListActivity {
 
     private static final String LOGTAG = "TOURS";
+
+    ToursDataSource dataSource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +36,8 @@ public class MainActivity extends ListActivity {
 
         //useJSONFile();
         useXMLFile();
+
+        dataSource = new ToursDataSource(this);
 
         //final ToursListAdapter toursListAdapter = new ToursListAdapter()
     }
@@ -104,5 +110,17 @@ public class MainActivity extends ListActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dataSource.openDB();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dataSource.closeDB();
     }
 }
