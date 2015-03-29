@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -122,5 +123,16 @@ public class MainActivity extends ListActivity {
     protected void onPause() {
         super.onPause();
         dataSource.closeDB();
+    }
+
+    private void createData(){
+        Tour tour = new Tour();
+        tour.setTitle("Disneyland");
+        tour.setDescription("Tour to Disneyland");
+        tour.setPrice(800);
+        tour.setImage("disney_land");
+
+        tour = dataSource.create(tour);
+        Log.i(LOGTAG, "New tour item added wit ID: " + tour.getId());
     }
 }

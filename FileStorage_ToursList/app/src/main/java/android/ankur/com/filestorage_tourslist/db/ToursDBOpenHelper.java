@@ -19,12 +19,12 @@ public class ToursDBOpenHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     //Table Name for this app
-    private static final String TABLE_TOURS = "tours";
-    private static final String COLUMN_ID = "tourID";
-    private static final String COLUMN_TITLE = "title";
-    private static final String COLUMN_DESC = "desc";
-    private static final String COLUMN_PRICE = "price";
-    private static final String COLUMN_IMAGE = "image";
+    public static final String TABLE_TOURS = "tours";
+    public static final String COLUMN_ID = "tourID";
+    public static final String COLUMN_TITLE = "title";
+    public static final String COLUMN_DESC = "desc";
+    public static final String COLUMN_PRICE = "price";
+    public static final String COLUMN_IMAGE = "image";
 
     private static final String TABLE_CREATE =
             "CREATE TABLE " + TABLE_TOURS + " (" +
