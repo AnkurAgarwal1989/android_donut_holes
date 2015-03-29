@@ -36,11 +36,19 @@ public class MainActivity extends ListActivity {
         setContentView(R.layout.activity_main);
 
         //useJSONFile();
-        useXMLFile();
+        //useXMLFile();
 
         dataSource = new ToursDataSource(this);
+        dataSource.openDB();
 
-        //final ToursListAdapter toursListAdapter = new ToursListAdapter()
+        List<Tour> tours = dataSource.readAll();
+        if (tours.size() == 0){
+            importXMLtoSQLite();
+            tours = dataSource.readAll();
+        }
+
+        final ToursListAdapter toursListAdapter = new ToursListAdapter(this, R.layout.list_item_layout, tours);
+        setListAdapter(toursListAdapter);
     }
 
     private void useXMLFile() {
@@ -125,14 +133,16 @@ public class MainActivity extends ListActivity {
         dataSource.closeDB();
     }
 
-    private void createData(){
-        Tour tour = new Tour();
-        tour.setTitle("Disneyland");
-        tour.setDescription("Tour to Disneyland");
-        tour.setPrice(800);
-        tour.setImage("disney_land");
+    private void importXMLtoSQLite(){
 
-        tour = dataSource.create(tour);
-        Log.i(LOGTAG, "New tour item added wit ID: " + tour.getId());
+        ToursPullParser toursPullParser = new ToursPullParser();
+        List<Tour> tours;
+        tours = toursPullParser.parseXML(this);
+
+        for (Tour tour : tours){
+            tour = dataSource.create(tour);
+            Log.i(LOGTAG, "New tour item added wit ID: " + tour.getId());
+        }
+
     }
 }
