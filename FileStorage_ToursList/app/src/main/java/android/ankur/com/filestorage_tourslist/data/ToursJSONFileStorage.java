@@ -18,7 +18,7 @@ import java.io.IOException;
  * Created by Ankur on 3/27/2015.
  */
 //Class to handle reading and writing to external storage for Tours File
-public class ToursFileStorage {
+public class ToursJSONFileStorage {
 
     Context context;
     private static final String FILENAME = "tours";
@@ -26,7 +26,7 @@ public class ToursFileStorage {
     private File file;
 
 
-    public ToursFileStorage(Context context) throws IOException, JSONException {
+    public ToursJSONFileStorage(Context context) throws IOException, JSONException {
         this.context = context;
 
         if (checkExternalStorage())
