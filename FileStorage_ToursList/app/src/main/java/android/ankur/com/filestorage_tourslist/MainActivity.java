@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends ListActivity {
 
-    private static final String LOGTAG = "TOURS";
+    public static final String LOGTAG = "TOURS";
     public static final String VIEWIMAGEPREF = "viewImage";
 
     private SharedPreferences prefs;
