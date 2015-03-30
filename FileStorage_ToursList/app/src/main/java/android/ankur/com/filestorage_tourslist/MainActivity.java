@@ -3,6 +3,7 @@ package android.ankur.com.filestorage_tourslist;
 import android.ankur.com.filestorage_tourslist.data.Tour;
 import android.ankur.com.filestorage_tourslist.data.ToursJSONFileStorage;
 import android.ankur.com.filestorage_tourslist.db.ToursDataSource;
+import android.ankur.com.filestorage_tourslist.db.ToursMyDataSource;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +34,7 @@ public class MainActivity extends ListActivity {
     private SharedPreferences.OnSharedPreferenceChangeListener prefsListener;
 
     ToursDataSource dataSource;
+    ToursMyDataSource myDataSource;
     private List<Tour> tours;
 
     @Override
@@ -58,6 +60,9 @@ public class MainActivity extends ListActivity {
 
         dataSource = new ToursDataSource(this);
         dataSource.openDB();
+
+        myDataSource = new ToursMyDataSource(this);
+        myDataSource.openDB();
 
         tours = dataSource.readAll();
         if (tours.size() == 0){
@@ -165,6 +170,10 @@ public class MainActivity extends ListActivity {
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                break;
+
+            case R.id.action_my:
+                tours = myDataSource.findMyTours();
                 break;
 
             case R.id.action_all:

@@ -59,5 +59,4 @@ public class ToursDBOpenHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYTOURS);
         onCreate(db);
     }
-
 }

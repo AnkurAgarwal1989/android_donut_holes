@@ -5,6 +5,10 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item android:id="@+id/action_my"
+        android:title="@string/action_my"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
     <item android:id="@+id/action_all"
         android:title="@string/action_all"
         android:orderInCategory="100"
