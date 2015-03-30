@@ -1,6 +1,7 @@
 package android.ankur.com.filestorage_tourslist;
 
 import android.ankur.com.filestorage_tourslist.data.Tour;
+import android.ankur.com.filestorage_tourslist.db.ToursMyDataSource;
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import java.text.NumberFormat;
 public class TourDetailActivity extends Activity {
 
     Tour tour;
+    ToursMyDataSource myDataSource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +29,8 @@ public class TourDetailActivity extends Activity {
         tour = bundle.getParcelable(".data.Tour");
 
         refreshDisplay();
+        myDataSource = new ToursMyDataSource(this);
+        myDataSource.openDB();
     }
 
 
@@ -44,8 +49,8 @@ public class TourDetailActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_add) {
+            return myDataSource.addToMyTours(tour);
         }
 
         return super.onOptionsItemSelected(item);
