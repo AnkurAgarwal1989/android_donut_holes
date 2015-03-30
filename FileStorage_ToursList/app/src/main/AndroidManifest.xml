@@ -31,6 +31,10 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name=".TourDetailActivity"
+            android:label="@string/title_activity_tour_detail" >
+        </activity>
     </application>
 
 </manifest>
