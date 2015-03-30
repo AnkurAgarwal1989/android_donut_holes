@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -29,6 +28,7 @@ public class MainActivity extends ListActivity {
 
     public static final String LOGTAG = "TOURS";
     public static final String VIEWIMAGEPREF = "viewImage";
+    private static final int TOUR_DETAIL_ACTIVITY = 1000;
 
     private SharedPreferences prefs;
     private SharedPreferences.OnSharedPreferenceChangeListener prefsListener;
@@ -36,6 +36,9 @@ public class MainActivity extends ListActivity {
     ToursDataSource dataSource;
     ToursMyDataSource myDataSource;
     private List<Tour> tours;
+
+    //Used to tell detail activity which data is being shown right now. If isMyTours are being shown, allow deletion. else allow addition
+    boolean isMyTours;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +71,23 @@ public class MainActivity extends ListActivity {
         if (tours.size() == 0){
             importXMLtoSQLite();
             tours = dataSource.readAll();
+            isMyTours = false;
         }
 
         refreshDisplay();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TOUR_DETAIL_ACTIVITY)
+            //if activity returned with -1, that means a row was deleted...
+            if (resultCode == -1)
+            {
+                tours = myDataSource.findMyTours();
+                refreshDisplay();
+                isMyTours = true;
+            }
     }
 
     @Override
@@ -84,7 +101,9 @@ public class MainActivity extends ListActivity {
         //Since we are using parcel, arg 1 is the class it is instance of, arg2 is the object...
         // the packaging happens internally in Tour class;
         intent.putExtra(".data.Tour", tour);
-        startActivity(intent);
+        intent.putExtra("isMyTours", isMyTours);
+
+        startActivityForResult(intent, TOUR_DETAIL_ACTIVITY);
     }
 
     private void refreshDisplay() {
@@ -174,21 +193,26 @@ public class MainActivity extends ListActivity {
 
             case R.id.action_my:
                 tours = myDataSource.findMyTours();
+                isMyTours = true;
                 break;
 
             case R.id.action_all:
                 tours = dataSource.readAll();
+                isMyTours = false;
                 break;
 
             case R.id.action_basic:
                 tours = dataSource.readFiltered("price <= 300", "price ASC");
+                isMyTours = false;
                 break;
 
             case R.id.action_premium:
                 tours = dataSource.readFiltered("price > 300", "price DESC");
+                isMyTours = false;
                 break;
 
             default:
+                isMyTours = false;
                 break;
         }
         refreshDisplay();

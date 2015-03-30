@@ -41,6 +41,13 @@ public class ToursMyDataSource {
         return (insertID != -1);
     }
 
+    public boolean removeFromMyTours(Tour tour){
+        String deleteQuery = ToursDBOpenHelper.COLUMN_ID + " = " + tour.getId();
+        int numRows = db.delete(ToursDBOpenHelper.TABLE_MYTOURS, deleteQuery, null);
+        return (numRows == 1);
+    }
+
+
     public List<Tour> findMyTours(){
         String query = "SELECT " + ToursDBOpenHelper.TABLE_TOURS + ".* FROM " +
                 ToursDBOpenHelper.TABLE_TOURS + " JOIN " + ToursDBOpenHelper.TABLE_MYTOURS + " ON " +
@@ -69,10 +76,4 @@ public class ToursMyDataSource {
         }
         return tours;
     }
-
-    private boolean 
-
-
-
-
 }

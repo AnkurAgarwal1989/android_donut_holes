@@ -3,5 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="android.ankur.com.filestorage_tourslist.TourDetailActivity">
     <item android:id="@+id/action_add" android:title="Add to My Tours"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" app:showAsAction="always" />
+    <item android:id="@+id/action_remove" android:title="Remove from My Tours"
+        android:orderInCategory="100" app:showAsAction="always" />
 </menu>
