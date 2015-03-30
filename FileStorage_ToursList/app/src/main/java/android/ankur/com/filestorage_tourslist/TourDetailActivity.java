@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.NumberFormat;
 
@@ -50,7 +51,15 @@ public class TourDetailActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
-            return myDataSource.addToMyTours(tour);
+            if (myDataSource.addToMyTours(tour))
+            {
+                Toast.makeText(this, "Tour Added to your list", Toast.LENGTH_LONG).show();
+                return true;
+            }
+            else{
+                Toast.makeText(this, "Tour could not be added. It maybe already present in your list", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -62,7 +71,7 @@ public class TourDetailActivity extends Activity {
 
         TextView tourPrice = (TextView) findViewById(R.id.tourPrice);
         NumberFormat nf = NumberFormat.getCurrencyInstance();
-        tourPrice.setText("$ " + nf.format(tour.getPrice()));
+        tourPrice.setText(nf.format(tour.getPrice()));
 
         TextView tourDesc = (TextView) findViewById(R.id.tourDesc);
         tourDesc.setText(tour.getDescription());

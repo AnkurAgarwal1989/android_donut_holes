@@ -70,6 +70,8 @@ public class ToursMyDataSource {
         return tours;
     }
 
+    private boolean 
+
 
 
 
