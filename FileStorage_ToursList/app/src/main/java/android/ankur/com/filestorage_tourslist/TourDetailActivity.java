@@ -20,6 +20,12 @@ public class TourDetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tour_detail);
+        Log.i(MainActivity.LOGTAG, "Detail Activity");
+
+        Bundle bundle = getIntent().getExtras();
+        tour = bundle.getParcelable(".data.Tour");
+
+        refreshDisplay();
     }
 
 

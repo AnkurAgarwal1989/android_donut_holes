@@ -76,9 +76,10 @@ public class MainActivity extends ListActivity {
 
         //List View position gives us position in the tours list which is a private member
         Intent intent = new Intent(this, TourDetailActivity.class);
-        Log.i(LOGTAG, "Intent created for tour detail");
+        //Since we are using parcel, arg 1 is the class it is instance of, arg2 is the object...
+        // the packaging happens internally in Tour class;
+        intent.putExtra(".data.Tour", tour);
         startActivity(intent);
-
     }
 
     private void refreshDisplay() {
