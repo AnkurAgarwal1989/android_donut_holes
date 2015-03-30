@@ -1,8 +1,11 @@
 package android.ankur.com.filestorage_tourslist.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.NumberFormat;
 
-public class Tour {
+public class Tour implements Parcelable{
 	private long id;
 	private String title;
 	private String description;
@@ -44,4 +47,14 @@ public class Tour {
 		NumberFormat nf = NumberFormat.getCurrencyInstance();
 		return title + "\n(" + nf.format(price) + ")";
 	}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 }
