@@ -1,13 +1,21 @@
 package android.ankur.com.filestorage_tourslist;
 
+import android.ankur.com.filestorage_tourslist.data.Tour;
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.text.NumberFormat;
 
 
-public class TourDetailActivity extends ActionBarActivity {
+public class TourDetailActivity extends Activity {
 
+    Tour tour;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,4 +44,22 @@ public class TourDetailActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void refreshDisplay(){
+        TextView tourTitle = (TextView) findViewById(R.id.tourTitle);
+        tourTitle.setText(tour.getTitle());
+
+        TextView tourPrice = (TextView) findViewById(R.id.tourPrice);
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        tourPrice.setText("$ " + nf.format(tour.getPrice()));
+
+        TextView tourDesc = (TextView) findViewById(R.id.tourDesc);
+        tourDesc.setText(tour.getDescription());
+
+        ImageView tourImage = (ImageView) findViewById(R.id.tourImage);
+        int imageResID = getResources().getIdentifier(tour.getImage(), "drawable", getPackageName());
+        if (imageResID != 0)
+            tourImage.setImageResource(imageResID);
+    }
+
 }

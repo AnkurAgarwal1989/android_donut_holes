@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,6 +66,19 @@ public class MainActivity extends ListActivity {
         }
 
         refreshDisplay();
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        Tour tour = tours.get(position);
+
+        //List View position gives us position in the tours list which is a private member
+        Intent intent = new Intent(this, TourDetailActivity.class);
+        Log.i(LOGTAG, "Intent created for tour detail");
+        startActivity(intent);
+
     }
 
     private void refreshDisplay() {
