@@ -1,5 +1,6 @@
 package android.ankur.com.filestorage_tourslist.db;
 
+import android.ankur.com.filestorage_tourslist.MainActivity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -16,7 +17,7 @@ public class ToursDBOpenHelper extends SQLiteOpenHelper {
 
     //Database name
     private static final String DATABASE_NAME = "tours.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     //Table Name for this app
     public static final String TABLE_TOURS = "tours";
@@ -37,22 +38,11 @@ public class ToursDBOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_MYTOURS = "mytours";
     private static final String TABLE_MYTOURS_CREATE =
             "CREATE TABLE " + TABLE_MYTOURS + " (" +
-                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_TITLE + " TEXT, " +
-                    COLUMN_DESC + " TEXT, " +
-                    COLUMN_PRICE + " NUMERIC, " +
-                    COLUMN_IMAGE + " TEXT " + ")";
+                    COLUMN_ID + " INTEGER PRIMARY KEY " +")";
 
 
     public ToursDBOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOURS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYTOURS);
-        onCreate(db);
     }
 
     @Override
@@ -62,5 +52,12 @@ public class ToursDBOpenHelper extends SQLiteOpenHelper {
         Log.i(LOGTAG, "Tables created in database");
     }
 
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.i(MainActivity.LOGTAG, "Database upgraded");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOURS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYTOURS);
+        onCreate(db);
+    }
 
 }
