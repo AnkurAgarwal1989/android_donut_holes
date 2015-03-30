@@ -4,11 +4,16 @@ import android.ankur.com.filestorage_tourslist.data.Tour;
 import android.ankur.com.filestorage_tourslist.data.ToursJSONFileStorage;
 import android.ankur.com.filestorage_tourslist.db.ToursDataSource;
 import android.app.ListActivity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +26,10 @@ import java.util.List;
 public class MainActivity extends ListActivity {
 
     private static final String LOGTAG = "TOURS";
+    public static final String VIEWIMAGEPREF = "viewImage";
+
+    private SharedPreferences prefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener prefsListener;
 
     ToursDataSource dataSource;
     private List<Tour> tours;
@@ -29,6 +38,19 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        prefsListener = new SharedPreferences.OnSharedPreferenceChangeListener(){
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                Log.i(LOGTAG, "Preference Changed");
+                MainActivity.this.refreshDisplay();
+            }
+        };
+        //register listener
+        prefs.registerOnSharedPreferenceChangeListener(prefsListener);
+
 
         //useJSONFile();
         //useXMLFile();
@@ -46,8 +68,25 @@ public class MainActivity extends ListActivity {
     }
 
     private void refreshDisplay() {
-        final ToursListAdapter toursListAdapter = new ToursListAdapter(this, R.layout.list_item_layout, tours);
-        setListAdapter(toursListAdapter);
+
+        Log.i(LOGTAG, "Display Updated");
+        //If rich text is checked use ToursListAdapter
+        if (getPrefs(null))
+        {
+            Log.i(LOGTAG, "Rich Display Updated");
+
+            final ToursListAdapter toursListAdapter = new ToursListAdapter(this, R.layout.list_item_layout, tours);
+            setListAdapter(toursListAdapter);
+        }
+        //Else use regular adapter
+        else
+        {
+            Log.i(LOGTAG, "Basic Display Updated");
+
+            final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, tours);
+            setListAdapter(adapter);
+        }
+
     }
 
     private void useXMLFile() {
@@ -109,7 +148,8 @@ public class MainActivity extends ListActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch(item.getItemId()){
             case R.id.action_settings:
-                tours = dataSource.readAll();
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.action_all:
@@ -154,5 +194,10 @@ public class MainActivity extends ListActivity {
             Log.i(LOGTAG, "New tour item added wit ID: " + tour.getId());
         }
 
+    }
+
+    public boolean getPrefs(View v){
+        Log.i(LOGTAG, "Getting prefs.");
+        return prefs.getBoolean(VIEWIMAGEPREF, false);
     }
 }

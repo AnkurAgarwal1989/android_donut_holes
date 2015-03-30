@@ -39,11 +39,9 @@ public class ToursListAdapter extends ArrayAdapter<Tour> {
         tour_label.setText(tour.toString());
         int drawableResourceId = context.getResources().getIdentifier(tour.getImage(), "drawable", context.getPackageName());
         if (drawableResourceId > 0)
-            tour_icon.setImageDrawable( context.getResources().getDrawable(drawableResourceId));
-        else {
-            tour_icon.setImageDrawable(null);
-            tour_icon.setVisibility(View.INVISIBLE);
-        }
+            tour_icon.setImageDrawable(context.getResources().getDrawable(drawableResourceId));
+        else
+            tour_icon.setImageDrawable(context.getResources().getDrawable(R.drawable.map_various));
         //Set text to tour_label
         //Set text to tour_icon
         return rowView;
