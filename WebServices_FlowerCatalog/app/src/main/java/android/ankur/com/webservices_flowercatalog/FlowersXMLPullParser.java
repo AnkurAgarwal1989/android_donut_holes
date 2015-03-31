@@ -58,7 +58,7 @@ public class FlowersXMLPullParser {
                         if (inDataItemTag && flower != null) {
                             switch (currentTagName) {
                                 case "productId":
-                                    flower.setProductID(Integer.parseInt(xpp.getText()));
+                                    flower.setProductId(Integer.parseInt(xpp.getText()));
                                     break;
                                 case "category":
                                     flower.setCategory(xpp.getText());

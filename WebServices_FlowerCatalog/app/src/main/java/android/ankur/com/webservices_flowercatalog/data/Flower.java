@@ -19,7 +19,7 @@ public class Flower {
         return productId;
     }
 
-    public void setProductID(int productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
