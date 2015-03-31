@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,6 @@ public class MainActivity extends Activity {
     TextView outputTextView;
     String testText;
     List<DownloadFlowerNamesTask> tasks;
-
 
     ProgressBar pb;
 
@@ -70,12 +70,17 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_update) {
-            testText = "Task Done";
-            requestData();
-            return true;
-        }
+            if (isOnline())
+            {
+                requestData();
+            }
+            else
+            {
+                Toast.makeText(this, "Network connection not found", Toast.LENGTH_LONG).show();
+            }
 
-        return super.onOptionsItemSelected(item);
+        }
+        return false;
     }
 
     private void requestData() {
