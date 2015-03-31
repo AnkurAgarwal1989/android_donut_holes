@@ -14,6 +14,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 
-    TextView outputTextView;
+    //TextView outputTextView;
     String testText;
 
     List<DownloadFlowerNamesTask> tasks;
@@ -42,8 +43,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        outputTextView = (TextView) findViewById(R.id.textView);
-        outputTextView.setMovementMethod(new ScrollingMovementMethod());
+        //outputTextView = (TextView) findViewById(R.id.textView);
+        //outputTextView.setMovementMethod(new ScrollingMovementMethod());
 
         pb = (ProgressBar) findViewById(R.id.progressBar);
         pb.setVisibility(View.INVISIBLE);
@@ -100,7 +101,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            updateDisplay("Starting task");
+            //updateDisplay("Starting task");
             if(tasks.size() == 0)
                 pb.setVisibility(View.VISIBLE);
             tasks.add(this);
@@ -127,15 +128,13 @@ public class MainActivity extends Activity {
                 pb.setVisibility(View.INVISIBLE);
 
         }
-
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            updateDisplay(values[0]);
-        }
     }
 
     private void updateDisplay(String text) {
-        outputTextView.append(text + "\n" );
+        flowerList = FlowersXMLPullParser.parseXML(text);
+        FlowersListAdapter flowersListAdapter = new FlowersListAdapter(this,R.layout.list_item_flower, flowerList);
+        setListAdapter(flowersListAdapter);
+
+        //outputTextView.append(text + "\n" );
     }
 }
