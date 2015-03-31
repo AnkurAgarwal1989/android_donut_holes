@@ -33,6 +33,8 @@ public class MainActivity extends Activity {
 
     ProgressBar pb;
 
+    public static final String LOGTAG = "FLOWERS";
+
     public String URLSTRING = "http://services.hanselandpetal.com/feeds/flowers.xml";
 
     @Override
