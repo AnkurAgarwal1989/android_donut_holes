@@ -11,7 +11,7 @@ public class Flower {
     private String name;
     private String category;
     private String instructions;
-    private String price;
+    private double price;
     private String photo;
     private Bitmap image;
 
@@ -47,11 +47,11 @@ public class Flower {
         this.instructions = instructions;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -71,4 +71,8 @@ public class Flower {
         this.image = image;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

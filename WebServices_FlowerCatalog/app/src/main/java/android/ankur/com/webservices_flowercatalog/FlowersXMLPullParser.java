@@ -11,6 +11,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,70 +29,72 @@ public class FlowersXMLPullParser {
 
             String currentTagName = "";
             Flower flower = null;
-            List<Flower> flowers = new ArrayList<Flower>();
+            List<Flower> flowerList = new ArrayList<Flower>();
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
             XmlPullParser xpp = factory.newPullParser();
-
-            //Open required .xml file from res/raw
-            InputStream stream = context.getResources().openRawResource(R.raw.tours);
-            xpp.setInput(stream, null);
+            xpp.setInput(new StringReader(content));
 
             int eventType = xpp.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                if (eventType == XmlPullParser.START_TAG) {
-                    handleStartTag(xpp.getName());
-                } else if (eventType == XmlPullParser.END_TAG) {
-                    currentTag = null;
-                } else if (eventType == XmlPullParser.TEXT) {
-                    handleText(xpp.getText());
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        currentTagName = xpp.getName();
+                        if (currentTagName.equals("product")) {
+                            inDataItemTag = true;
+                            flower = new Flower();
+                            flowerList.add(flower);
+                        }
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        if (xpp.getName().equals("product"))
+                            inDataItemTag = false;
+                        currentTagName = "";
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        if (inDataItemTag && flower != null) {
+                            switch (currentTagName) {
+                                case "productId":
+                                    flower.setProductID(Integer.parseInt(xpp.getText()));
+                                    break;
+                                case "category":
+                                    flower.setCategory(xpp.getText());
+                                    break;
+                                case "name":
+                                    flower.setName(xpp.getText());
+                                    break;
+                                case "instructions":
+                                    flower.setInstructions(xpp.getText());
+                                    break;
+                                case "price":
+                                    flower.setPrice(Double.parseDouble(xpp.getText()));
+                                    break;
+                                case "photo":
+                                    flower.setPhoto(xpp.getText());
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        break;
                 }
+
                 eventType = xpp.next();
             }
+            return flowerList;
 
         } catch (Resources.NotFoundException e) {
-            Log.d(LOGTAG, e.getMessage());
+            Log.d(MainActivity.LOGTAG, e.getMessage());
         } catch (XmlPullParserException e) {
-            Log.d(LOGTAG, e.getMessage());
+            Log.d(MainActivity.LOGTAG, e.getMessage());
         } catch (IOException e) {
-            Log.d(LOGTAG, e.getMessage());
+            Log.d(MainActivity.LOGTAG, e.getMessage());
+            return null;
         }
-
-        return tours;
+        return null;
     }
 
-    private void handleText(String text) {
-        String xmlText = text;
-        if (currentTour != null && currentTag != null) {
-            if (currentTag.equals(TOUR_ID)) {
-                Integer id = Integer.parseInt(xmlText);
-                currentTour.setId(id);
-            }
-            else if (currentTag.equals(TOUR_TITLE)) {
-                currentTour.setTitle(xmlText);
-            }
-            else if (currentTag.equals(TOUR_DESC)) {
-                currentTour.setDescription(xmlText);
-            }
-            else if (currentTag.equals(TOUR_IMAGE)) {
-                currentTour.setImage(xmlText);
-            }
-            else if (currentTag.equals(TOUR_PRICE)) {
-                double price = Double.parseDouble(xmlText);
-                currentTour.setPrice(price);
-            }
-        }
-    }
-
-    private void handleStartTag(String name) {
-        if (name.equals("tour")) {
-            //create new tour object when you hit <tour>
-            currentTour = new Tour();
-            tours.add(currentTour);
-        }
-        else {
-            currentTag = name;
-        }
-    }
 }
