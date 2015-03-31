@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:layout_height="80dp"
+        android:layout_width="80dp"
+        android:contentDescription="@string/flower_name_placeholder"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/imageView_flowerImage"/>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/textView_flowerName"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/flower_name_placeholder"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/imageView_flowerImage"
+        android:layout_marginLeft="10dp"/>
+
+</RelativeLayout>
