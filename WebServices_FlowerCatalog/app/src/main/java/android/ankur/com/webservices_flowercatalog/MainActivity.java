@@ -1,5 +1,6 @@
 package android.ankur.com.webservices_flowercatalog;
 
+import android.ankur.com.webservices_flowercatalog.data.Flower;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -17,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +27,13 @@ public class MainActivity extends Activity {
 
     TextView outputTextView;
     String testText;
+
     List<DownloadFlowerNamesTask> tasks;
+    List<Flower> flowerList;
 
     ProgressBar pb;
+
+    public String URLSTRING = "http://services.hanselandpetal.com/feeds/flowers.xml";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +78,7 @@ public class MainActivity extends Activity {
         if (id == R.id.action_update) {
             if (isOnline())
             {
-                requestData();
+                requestData(URLSTRING);
             }
             else
             {
@@ -83,8 +89,8 @@ public class MainActivity extends Activity {
         return false;
     }
 
-    private void requestData() {
-        new DownloadFlowerNamesTask().execute("Param 1", "Param 2", "Param 3");
+    private void requestData(String uri) {
+        new DownloadFlowerNamesTask().execute(uri);
     }
 
     //Async class declared as inner class in activity
@@ -100,24 +106,24 @@ public class MainActivity extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-            for (int i=0; i< params.length; i++){
-                publishProgress("Working on " + i);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+            try {
+                return HttpManager.getData(params[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
             }
-            return "Task Complete";
         }
 
         @Override
         protected void onPostExecute(String s) {
 
+            updateDisplay(s);
+
             tasks.remove(this);
             if(tasks.size() == 0)
                 pb.setVisibility(View.INVISIBLE);
-            updateDisplay(s);
+
         }
 
 

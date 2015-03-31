@@ -7,17 +7,20 @@ import android.graphics.Bitmap;
  */
 public class Flower {
 
-    private int productID;
+    private int productId;
     private String name;
-    private String imageName;
+    private String category;
+    private String instructions;
+    private String price;
+    private String photo;
     private Bitmap image;
 
-    public int getProductID() {
-        return productID;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setProductID(int productID) {
-        this.productID = productID;
+    public void setProductID(int productId) {
+        this.productId = productId;
     }
 
     public String getName() {
@@ -28,12 +31,36 @@ public class Flower {
         this.name = name;
     }
 
-    public String getImageName() {
-        return imageName;
+    public String getCategory() {
+        return category;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public Bitmap getImage() {
