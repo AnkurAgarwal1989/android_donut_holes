@@ -3,6 +3,9 @@ package android.ankur.com.webservices_flowercatalog;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -38,6 +41,16 @@ public class MainActivity extends Activity {
         pb.setVisibility(View.INVISIBLE);
 
         tasks = new ArrayList<>();
+
+    }
+
+    protected boolean isOnline(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting())
+            return true;
+        else
+            return false;
     }
 
 
@@ -58,11 +71,15 @@ public class MainActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_update) {
             testText = "Task Done";
-            new DownloadFlowerNamesTask().execute("Param 1", "Param 2", "Param 3");
+            requestData();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void requestData() {
+        new DownloadFlowerNamesTask().execute("Param 1", "Param 2", "Param 3");
     }
 
     //Async class declared as inner class in activity
@@ -94,7 +111,7 @@ public class MainActivity extends Activity {
 
             tasks.remove(this);
             if(tasks.size() == 0)
-                pb.setVisibility(View.INVISIBLE); 
+                pb.setVisibility(View.INVISIBLE);
             updateDisplay(s);
         }
 
