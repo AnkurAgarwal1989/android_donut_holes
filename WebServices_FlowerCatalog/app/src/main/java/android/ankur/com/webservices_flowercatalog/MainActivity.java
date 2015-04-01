@@ -35,11 +35,11 @@ public class MainActivity extends ListActivity {
 
     public static final String LOGTAG = "FLOWERS";
 
-    public String URL_PRODUCT = "http://services.hanselandpetal.com/secure/flowers.xml";
+    public static String URL_PRODUCT = "http://services.hanselandpetal.com/secure/flowers.xml";
 
     //Each flower name has an image @ this location...eg.
     //agapanthus is @ /photos/agapanthus.jpg
-    public String URL_PHOTO = "http://services.hanselandpetal.com/photos/";
+    public static String URL_PHOTO = "http://services.hanselandpetal.com/photos/";
 
     //public String URL_PRODUCT = "http://services.hanselandpetal.com/feeds/flowers.xml";
 

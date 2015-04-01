@@ -118,7 +118,7 @@ public class HttpManager {
                     return null;
                 }
         }
-        Log.i(MainActivity.LOGTAG, sb.toString());
+        //Log.i(MainActivity.LOGTAG, sb.toString());
         return sb.toString();
     }
 }
