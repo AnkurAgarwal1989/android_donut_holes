@@ -121,7 +121,7 @@ public class MainActivity extends ListActivity {
                 flowerList = FlowersXMLPullParser.parseXML(content);
 
                 //Loop through all flowers, get photo names and download images.
-                for (Flower flower: flowerList){
+                /*for (Flower flower: flowerList){
                     try {
                         String imageURL = URL_PHOTO + flower.getPhoto();
                         //get as inout stream
@@ -134,7 +134,7 @@ public class MainActivity extends ListActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
                 return flowerList;
             } catch (IOException e) {
                 e.printStackTrace();
