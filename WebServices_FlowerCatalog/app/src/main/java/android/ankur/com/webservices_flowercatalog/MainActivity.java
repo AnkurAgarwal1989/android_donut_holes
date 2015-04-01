@@ -1,26 +1,24 @@
 package android.ankur.com.webservices_flowercatalog;
 
 import android.ankur.com.webservices_flowercatalog.data.Flower;
-import android.app.Activity;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListAdapter;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +35,13 @@ public class MainActivity extends ListActivity {
 
     public static final String LOGTAG = "FLOWERS";
 
-    public String URLSTRING = "https://services.hanselandpetal.com/secure/flowers.xml";
-    //public String URLSTRING = "http://services.hanselandpetal.com/feeds/flowers.xml";
+    public String URL_PRODUCT = "http://services.hanselandpetal.com/secure/flowers.xml";
+
+    //Each flower name has an image @ this location...eg.
+    //agapanthus is @ /photos/agapanthus.jpg
+    public String URL_PHOTO = "http://services.hanselandpetal.com/photos/";
+
+    //public String URL_PRODUCT = "http://services.hanselandpetal.com/feeds/flowers.xml";
 
 
     @Override
@@ -84,7 +87,7 @@ public class MainActivity extends ListActivity {
         if (id == R.id.action_update) {
             if (isOnline())
             {
-                requestData(URLSTRING);
+                requestData(URL_PRODUCT);
             }
             else
             {
@@ -100,7 +103,7 @@ public class MainActivity extends ListActivity {
     }
 
     //Async class declared as inner class in activity
-    private class DownloadFlowerNamesTask extends AsyncTask<String, String, String>{
+    private class DownloadFlowerNamesTask extends AsyncTask<String, String, List<Flower>>{
 
         @Override
         protected void onPreExecute() {
@@ -111,11 +114,28 @@ public class MainActivity extends ListActivity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
-
+        protected List<Flower> doInBackground(String... params) {
             try {
                 //params[0] holds the uri right now.
-                return HttpManager.getData(params[0], "feeduser", "feedpassword");
+                String content = HttpManager.getData(params[0], "feeduser", "feedpassword");
+                flowerList = FlowersXMLPullParser.parseXML(content);
+
+                //Loop through all flowers, get photo names and download images.
+                for (Flower flower: flowerList){
+                    try {
+                        String imageURL = URL_PHOTO + flower.getPhoto();
+                        //get as inout stream
+                        InputStream in = (InputStream) new URL(imageURL).getContent();
+                        //convert to bitmap
+                        Bitmap image = BitmapFactory.decodeStream(in);
+                        flower.setImage(image);
+                        //close input stream
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return flowerList;
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -123,26 +143,23 @@ public class MainActivity extends ListActivity {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(List<Flower> result) {
 
             tasks.remove(this);
             if(tasks.size() == 0)
                 pb.setVisibility(View.INVISIBLE);
 
-            if (s == null)
+            if (result == null)
                 Toast.makeText(MainActivity.this, "Could not connect to web service", Toast.LENGTH_LONG).show();
             else
-                updateDisplay(s);
+                updateDisplay();
 
         }
     }
 
-    private void updateDisplay(String text) {
-        Log.i(LOGTAG, text);
-        flowerList = FlowersXMLPullParser.parseXML(text);
+    private void updateDisplay() {
         FlowersListAdapter flowersListAdapter = new FlowersListAdapter(this,R.layout.list_item_flower, flowerList);
         setListAdapter(flowersListAdapter);
-
         //outputTextView.append(text + "\n" );
     }
 }

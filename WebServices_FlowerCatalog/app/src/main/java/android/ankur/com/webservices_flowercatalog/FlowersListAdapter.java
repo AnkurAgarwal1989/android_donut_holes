@@ -2,6 +2,7 @@ package android.ankur.com.webservices_flowercatalog;
 
 import android.ankur.com.webservices_flowercatalog.data.Flower;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +34,12 @@ public class FlowersListAdapter extends ArrayAdapter<Flower> {
         ImageView flowerImage = (ImageView) rowView.findViewById(R.id.imageView_flowerImage);
         Flower flower = getItem(position);
         flowerName.setText(flower.toString());
-        /*int drawableResourceId = context.getResources().getIdentifier(tour.getImage(), "drawable", context.getPackageName());
-        if (drawableResourceId > 0)
-            flowerImage.setImageDrawable(context.getResources().getDrawable(drawableResourceId));
-        else
-            flowerImage.setImageDrawable(context.getResources().getDrawable(R.drawable.map_various));*/
-        //Set text to tour_label
-        //Set text to tour_icon
+
+        Bitmap bitmap = flower.getImage();
+
+        if (bitmap != null)
+            flowerImage.setImageBitmap(bitmap);
+
         return rowView;
 
     }
