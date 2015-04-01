@@ -3,13 +3,10 @@ package android.ankur.com.webservices_flowercatalog;
 import android.ankur.com.webservices_flowercatalog.data.Flower;
 import android.app.ListActivity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,22 +114,6 @@ public class MainActivity extends ListActivity {
                 //params[0] holds the uri right now.
                 String content = HttpManager.getData(params[0], "feeduser", "feedpassword");
                 flowerList = FlowersXMLPullParser.parseXML(content);
-
-                //Loop through all flowers, get photo names and download images.
-                /*for (Flower flower: flowerList){
-                    try {
-                        String imageURL = URL_PHOTO + flower.getPhoto();
-                        //get as inout stream
-                        InputStream in = (InputStream) new URL(imageURL).getContent();
-                        //convert to bitmap
-                        Bitmap image = BitmapFactory.decodeStream(in);
-                        flower.setImage(image);
-                        //close input stream
-                        in.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }*/
                 return flowerList;
             } catch (IOException e) {
                 e.printStackTrace();
