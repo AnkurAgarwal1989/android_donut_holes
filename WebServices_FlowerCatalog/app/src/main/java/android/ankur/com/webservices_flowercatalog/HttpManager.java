@@ -1,5 +1,7 @@
 package android.ankur.com.webservices_flowercatalog;
 
+import android.util.Base64;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,14 +16,70 @@ import java.net.URL;
  */
 public class HttpManager {
 
+    private static HttpURLConnection urlConnection;
+    private static URL url;
+
+
     //static so it belongs to the class, not an object of the class. we wont need to create an instance.
     public static String getData(String uri) throws IOException {
 
-        URL url = new URL(uri);
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        url = new URL(uri);
 
-        InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
-        return readStream(in);
+        if (openUnsecureConnection() == 1){
+            InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
+            return readStream(in);
+        }
+        else
+            return String.valueOf(-1);
+    }
+
+    //returning ints to show what error occured..like 401  feed not found and all.
+    private static int openUnsecureConnection(){
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            try {
+                int status = urlConnection.getResponseCode();
+                return status;
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                return -1;
+            }
+        }
+        return 1;
+    }
+    //Overload to accept 3 params when using secure url
+    public static String getData(String uri, String username, String password) throws IOException {
+
+        url = new URL(uri);
+
+        byte[] loginBytes = (username + ":" + password).getBytes();
+        StringBuilder loginBuilder = new StringBuilder();
+        loginBuilder.append("Basic").append(Base64.encodeToString(loginBytes, Base64.DEFAULT));
+
+        if (openSecureConnection(loginBuilder.toString()) == 1){
+            InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
+            return readStream(in);
+        }
+        else
+            return String.valueOf(-1);
+    }
+
+    private static int openSecureConnection(String login){
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.addRequestProperty("Authorization", login);
+        } catch (IOException e) {
+            e.printStackTrace();
+            try {
+                int status = urlConnection.getResponseCode();
+                return status;
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                return -1;
+            }
+        }
+        return 1;
     }
 
     private static String readStream(InputStreamReader in){
