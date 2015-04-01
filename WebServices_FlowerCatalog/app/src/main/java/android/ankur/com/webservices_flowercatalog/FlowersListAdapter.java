@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,34 +27,42 @@ public class FlowersListAdapter extends ArrayAdapter<Flower> {
     private final Context context;
     private final int resource;
 
+    //using productID as key
+    private LruCache<Integer, Bitmap> imageCache;
+
     public FlowersListAdapter(Context context, int resource, List<Flower> flowers) {
         super(context, resource, flowers);
         this.context = context;
         this.resource = resource;
+
+        //setting cache size
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        final int cacheSize = maxMemory / 8; //could be anything..we just want to limit our usage to 1/8
+        //TO see if the cache is working...make the size very small...the images should keep reloading...
+        Log.i(MainActivity.LOGTAG, "Cache Size: " + String.valueOf(cacheSize));
+        imageCache = new LruCache<>(cacheSize);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(resource, parent, false);
-        TextView flowerName = (TextView) rowView.findViewById(R.id.textView_flowerName);
+        ImageView flowerImageView = (ImageView) rowView.findViewById(R.id.imageView_flowerImage);
+        TextView flowerNameView = (TextView) rowView.findViewById(R.id.textView_flowerName);
         Flower flower = getItem(position);
-        flowerName.setText(flower.toString());
+        flowerNameView.setText(flower.toString());
 
-        Bitmap bitmap = flower.getImage();
-
-        if (bitmap != null) {
-            ImageView flowerImage = (ImageView) rowView.findViewById(R.id.imageView_flowerImage);
-            flowerImage.setImageBitmap(bitmap);
+        Bitmap cachedBitmap = imageCache.get(flower.getProductId());
+        if (cachedBitmap != null) {
+            flowerImageView.setImageBitmap(cachedBitmap);
         }
-        else{
+        //The bitmap is not there...download and save to cache instead of the flower object
+        else {
             FlowerandView flowerandView = new FlowerandView();
             flowerandView.flower = flower;
             flowerandView.view = rowView;
 
             new DownloadImage().execute(flowerandView);
-            ImageView flowerImage = (ImageView) rowView.findViewById(R.id.imageView_flowerImage);
-            flowerImage.setImageBitmap(flower.getImage());
         }
 
         return rowView;
@@ -60,9 +70,11 @@ public class FlowersListAdapter extends ArrayAdapter<Flower> {
 
     //We need to pass the view to the async task so that the display is immediately updated...
     //we need to pass Flower becuase we need to know what image to download
+    //Add the bitmap too...this ways the flower class will not need to save the bitmap for each object...we save bitmaps to cache.
     class FlowerandView {
         public View view;
         public Flower flower;
+        public Bitmap bitmap;
     }
 
     //We need to send the view, the flower object and the
@@ -80,8 +92,8 @@ public class FlowersListAdapter extends ArrayAdapter<Flower> {
                 //get as inout stream
                 InputStream in = (InputStream) new URL(imageURL).getContent();
                 //convert to bitmap
-                Bitmap image = BitmapFactory.decodeStream(in);
-                flower.setImage(image);
+                container.bitmap = BitmapFactory.decodeStream(in);
+
                 //close input stream
                 in.close();
                 return container;
@@ -94,7 +106,9 @@ public class FlowersListAdapter extends ArrayAdapter<Flower> {
         @Override
         protected void onPostExecute(FlowerandView flowerandView) {
             ImageView imageView = (ImageView) flowerandView.view.findViewById(R.id.imageView_flowerImage);
-            imageView.setImageBitmap(flowerandView.flower.getImage());
+            imageView.setImageBitmap(flowerandView.bitmap);
+
+            imageCache.put(flowerandView.flower.getProductId(), flowerandView.bitmap);
         }
     }
 }
