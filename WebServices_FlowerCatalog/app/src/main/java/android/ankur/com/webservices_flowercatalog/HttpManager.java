@@ -1,6 +1,8 @@
+
 package android.ankur.com.webservices_flowercatalog;
 
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -14,6 +16,8 @@ import java.net.URL;
 /**
  * Created by Ankur on 3/30/2015.
  */
+
+
 public class HttpManager {
 
     private static HttpURLConnection urlConnection;
@@ -52,12 +56,20 @@ public class HttpManager {
     public static String getData(String uri, String username, String password) throws IOException {
 
         url = new URL(uri);
+        Log.i(MainActivity.LOGTAG, "getData with username and password");
 
         byte[] loginBytes = (username + ":" + password).getBytes();
         StringBuilder loginBuilder = new StringBuilder();
-        loginBuilder.append("Basic").append(Base64.encodeToString(loginBytes, Base64.DEFAULT));
+        // important stuff
+        loginBuilder.append("Basic ");
+        loginBuilder.append(Base64.encodeToString(loginBytes, Base64.DEFAULT));
+
+        Log.i(MainActivity.LOGTAG, "String builder " + loginBuilder.toString());
 
         if (openSecureConnection(loginBuilder.toString()) == 1){
+
+            Log.i(MainActivity.LOGTAG, "Creating inputstream");
+
             InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
             return readStream(in);
         }
@@ -73,6 +85,7 @@ public class HttpManager {
             e.printStackTrace();
             try {
                 int status = urlConnection.getResponseCode();
+                Log.i(MainActivity.LOGTAG, "Return status : " + String.valueOf(status));
                 return status;
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -83,6 +96,8 @@ public class HttpManager {
     }
 
     private static String readStream(InputStreamReader in){
+
+        Log.i(MainActivity.LOGTAG, "reading ");
 
         BufferedReader reader = new BufferedReader(in);
         StringBuilder sb = new StringBuilder();
@@ -103,6 +118,7 @@ public class HttpManager {
                     return null;
                 }
         }
+        Log.i(MainActivity.LOGTAG, sb.toString());
         return sb.toString();
     }
 }

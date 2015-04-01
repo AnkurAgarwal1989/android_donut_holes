@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +37,9 @@ public class MainActivity extends ListActivity {
 
     public static final String LOGTAG = "FLOWERS";
 
-    public String URLSTRING = "http://services.hanselandpetal.com/feeds/flowers.xml";
+    public String URLSTRING = "https://services.hanselandpetal.com/secure/flowers.xml";
+    //public String URLSTRING = "http://services.hanselandpetal.com/feeds/flowers.xml";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +114,8 @@ public class MainActivity extends ListActivity {
         protected String doInBackground(String... params) {
 
             try {
-                return HttpManager.getData(params[0]);
+                //params[0] holds the uri right now.
+                return HttpManager.getData(params[0], "feeduser", "feedpassword");
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -121,16 +125,20 @@ public class MainActivity extends ListActivity {
         @Override
         protected void onPostExecute(String s) {
 
-            updateDisplay(s);
-
             tasks.remove(this);
             if(tasks.size() == 0)
                 pb.setVisibility(View.INVISIBLE);
+
+            if (s == null)
+                Toast.makeText(MainActivity.this, "Could not connect to web service", Toast.LENGTH_LONG).show();
+            else
+                updateDisplay(s);
 
         }
     }
 
     private void updateDisplay(String text) {
+        Log.i(LOGTAG, text);
         flowerList = FlowersXMLPullParser.parseXML(text);
         FlowersListAdapter flowersListAdapter = new FlowersListAdapter(this,R.layout.list_item_flower, flowerList);
         setListAdapter(flowersListAdapter);
